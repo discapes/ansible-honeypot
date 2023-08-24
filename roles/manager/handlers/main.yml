@@ -15,3 +15,6 @@
 
 - name: reload audit config
   shell: auditctl --signal stop; sleep 1; systemctl start auditd
+
+- name: reload sudo_logsrvd config
+  command: systemctl restart sudo_logsrvd

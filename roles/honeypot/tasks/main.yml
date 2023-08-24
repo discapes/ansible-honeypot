@@ -3,6 +3,47 @@
     name: common
   vars:
     gopath: /var/go
+
+- name: Install git, make, sudo and which
+  pacman:
+    name: 
+      - git
+      - make
+      - sudo
+      - which
+    state: present
+
+- name: Install sudosh
+  shell:
+    cmd: |
+      set -euo pipefail
+      rm -rf /tmp/sudosh
+      git -C /tmp clone https://github.com/cloudposse/sudosh.git
+      make -C /tmp/sudosh
+      make -C /tmp/sudosh build install
+      ls /usr/local/bin/sudosh
+      rm -rf /tmp/sudosh
+    creates: /usr/local/bin/sudosh
+
+- name: Configure sudo to log
+  blockinfile:
+    block: |
+      Defaults log_output
+      Defaults!/usr/bin/sudoreplay !log_output
+      Defaults!/usr/local/bin/sudoreplay !log_output
+      Defaults log_servers=13.48.136.246:30344
+      Defaults maxseq = 1000
+    path: /etc/sudoers
+
+- name: Set sudosh as the only shell
+  copy:
+    content: /usr/local/bin/sudosh
+    dest: /etc/shells
+
+- name: Change shell to sudosh
+  user:
+    name: root
+    shell: /usr/local/bin/sudosh
     
 - name: Configure audisp-remote address
   notify: reload audit config

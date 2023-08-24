@@ -39,6 +39,21 @@
     search_string: 'tcp_listen_port'
     line: 'tcp_listen_port = 60'
 
+- name: Configure audit connections
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    search_string: 'tcp_max_per_addr'
+    line: 'tcp_max_per_addr = 99'
+
+- name: Configure sudo_logsrvd
+  notify: reload sudo_logsrvd config
+  lineinfile:
+    path: /etc/sudo_logsrvd.conf
+    line: 'listen_address = *:30344'
+    insertafter: '^\[server\]$'
+    firstmatch: true
+
 - name: Flush handlers
   meta: flush_handlers
 
@@ -57,5 +72,11 @@
 - name:  Ensure syslog-ng is started and enabled
   service: 
     name: syslog-ng@default
+    state: started
+    enabled: yes
+
+- name:  Ensure sudo_logsrvd is started and enabled
+  service: 
+    name: sudo_logsrvd
     state: started
     enabled: yes
