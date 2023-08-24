@@ -1,0 +1,5 @@
+[managers]
+manager ansible_port=222 ansible_user=arch
+
+[honeypots]
+QQQ ansible_user=root ansible_port=22

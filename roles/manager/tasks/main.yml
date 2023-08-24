@@ -1,0 +1,61 @@
+- name: Include common role
+  include_role:
+    name: common
+
+- name: Install syslog-ng and audit from repo
+  community.general.pacman:
+    name: 
+      - syslog-ng
+      - audit
+    state: present
+
+- name: Configure chisel-server unit
+  notify: reload chisel-server unit
+  template:
+    src: chisel-server.service
+    dest: /etc/systemd/system/chisel-server.service
+
+- name: Configure syslog-ng
+  notify: reload syslog-ng config
+  template:
+    src: syslog-ng.conf
+    dest: /etc/syslog-ng/syslog-ng.conf
+
+- name: Create /var/log/remote
+  file:
+    path: /var/log/remote
+    state: directory
+
+- name: Configure audit rules
+  notify: reload audit rules
+  template:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+
+- name: Configure audit to receive
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    search_string: 'tcp_listen_port'
+    line: 'tcp_listen_port = 60'
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Ensure chisel-server is started and enabled
+  service:
+    name: chisel-server
+    state: started
+    enabled: yes
+
+- name:  Ensure auditd is started and enabled
+  service: 
+    name: auditd
+    state: started
+    enabled: yes
+
+- name:  Ensure syslog-ng is started and enabled
+  service: 
+    name: syslog-ng@default
+    state: started
+    enabled: yes

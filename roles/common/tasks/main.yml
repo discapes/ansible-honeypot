@@ -1,0 +1,19 @@
+- name: Install go, neovim and less from repo
+  community.general.pacman:
+    name: 
+      - go
+      - neovim
+      - less
+    state: present
+
+- name: Install Chisel
+  command: 
+    cmd: go install github.com/jpillora/chisel@latest
+    creates: "{{ gopath }}/bin/chisel"
+  environment:
+    GOPATH: "{{ gopath }}"
+
+- name: Add vim symlink
+  command: 
+    cmd: ln -s nvim /usr/bin/vim
+    creates: "/usr/bin/vim"

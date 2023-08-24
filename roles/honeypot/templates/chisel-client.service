@@ -1,0 +1,11 @@
+[Unit]
+Description=Chisel client
+
+[Service]
+Type=simple
+ExecStart=/var/go/bin/chisel client 13.48.136.246:999 R:22
+ExecStartPost=/bin/sleep 1
+ExecStartPost=/bin/bash -c "[ ! -z $MAINPID ]"
+
+[Install]
+WantedBy=multi-user.target 

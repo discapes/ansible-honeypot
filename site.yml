@@ -1,0 +1,11 @@
+- name: configure managers
+  hosts: managers
+  become: true
+  roles:
+    - manager
+
+- name: configure honeypots
+  hosts: honeypots
+  become: true
+  roles:
+    - honeypot
