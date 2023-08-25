@@ -1,0 +1,16 @@
+- name: Configure sudo_logsrvd
+  notify: reload sudo_logsrvd config
+  lineinfile:
+    path: /etc/sudo_logsrvd.conf
+    line: 'listen_address = *:30344'
+    insertafter: '^\[server\]$'
+    firstmatch: true
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name:  Ensure sudo_logsrvd is started and enabled
+  service: 
+    name: sudo_logsrvd
+    state: started
+    enabled: yes

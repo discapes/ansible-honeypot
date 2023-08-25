@@ -1,0 +1,5 @@
+- name: reload audit rules
+  command: augenrules --load
+
+- name: reload audit config
+  shell: auditctl --signal stop; sleep 1; systemctl start auditd

@@ -1,17 +1,10 @@
-- name: Install go, neovim and less from repo
+- name: Install neovim, less, sudo from repo
   community.general.pacman:
     name: 
-      - go
       - neovim
       - less
+      - sudo
     state: present
-
-- name: Install Chisel
-  command: 
-    cmd: go install github.com/jpillora/chisel@latest
-    creates: "{{ gopath }}/bin/chisel"
-  environment:
-    GOPATH: "{{ gopath }}"
 
 - name: Add vim symlink
   command: 

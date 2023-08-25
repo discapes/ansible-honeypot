@@ -1,11 +1,25 @@
-- name: configure managers
+- name: configure manager
   hosts: managers
   become: true
+  gather_facts: false
+  vars:
+    rathole_type: ratholes
   roles:
-    - manager
+    - common
+    - rathole
+    - syslog-srv
+    - audit-srv
+    - sudosh-srv
 
-- name: configure honeypots
+- name: configure honeypot
   hosts: honeypots
   become: true
+  gather_facts: false
+  vars:
+    rathole_type: ratholec
   roles:
-    - honeypot
+    - common
+    - rathole
+    - syslog-cli
+    - audit-cli
+    - sudosh-cli

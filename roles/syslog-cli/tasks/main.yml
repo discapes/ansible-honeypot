@@ -1,0 +1,5 @@
+- name: Configure bashrc
+  lineinfile:
+    path: /etc/bash.bashrc
+    regexp: '^PROMPT_COMMAND'
+    line: 'PROMPT_COMMAND="history -a >(logger --rfc5424=notq,notime,nohost -n {{ manager_ip }} -t [\$USER])"'

@@ -1,0 +1,29 @@
+- name: Configure audit rules
+  notify: reload audit rules
+  copy:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+
+- name: Configure audit to receive
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    search_string: 'tcp_listen_port'
+    line: 'tcp_listen_port = 60'
+
+- name: Configure audit connections
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    search_string: 'tcp_max_per_addr'
+    line: 'tcp_max_per_addr = 99'
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name:  Ensure auditd is started and enabled
+  service: 
+    name: auditd
+    state: started
+    enabled: yes
+

@@ -1,0 +1,37 @@
+- name: Install rathole
+  community.general.pacman:
+    name: rathole
+    state: present
+
+- name: Ensure rathole dir exists
+  file:
+    path: /etc/rathole
+    state: directory
+
+- name: Add rathole configuration
+  template:
+    src: default.toml.j2
+    dest: /etc/rathole/default.toml
+  notify: reload rathole config
+
+- name: Create a rathole@.service override directory
+  file:
+    path: "/etc/systemd/system/rathole@.service.d"
+    state: directory
+
+- name: Fix rathole@.service with override
+  ini_file:
+    dest: /etc/systemd/system/ratholes@.service.d/override.conf
+    section: Service
+    option: DynamicUser
+    value: 'no'
+  notify: reload rathole unit
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Ensure rathole is started and enabled
+  service:
+    name: "{{ rathole_type }}@default"
+    state: started
+    enabled: yes

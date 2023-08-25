@@ -1,0 +1,28 @@
+- name: Configure audisp-remote address
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/audisp-remote.conf
+    search_string: 'remote_server'
+    line: "remote_server = {{ manager_ip }}"
+
+- name: Configure audisp-remote to be active
+  notify: reload audit config
+  lineinfile:
+    path: /etc/audit/plugins.d/au-remote.conf 
+    search_string: 'active'
+    line: 'active = yes'
+
+- name: Configure audit rules
+  notify: reload audit rules
+  copy:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name:  Ensure auditd is started and enabled
+  service: 
+    name: auditd
+    state: started
+    enabled: yes

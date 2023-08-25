@@ -1,0 +1,4 @@
+- name: reload syslog-ng config
+  command: syslog-ng --syntax-only
+- name: reload syslog-ng config
+  command: syslog-ng-ctl reload

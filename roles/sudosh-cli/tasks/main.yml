@@ -1,0 +1,26 @@
+
+- name: Install sudosh
+  get_url:
+    url: https://github.com/cloudposse/sudosh/releases/download/0.3.0/sudosh_linux_amd64
+    dest: /usr/local/bin/sudosh
+    mode: 755
+
+- name: Configure sudo to log
+  blockinfile:
+    block: |
+      Defaults log_output
+      Defaults!/usr/bin/sudoreplay !log_output
+      Defaults!/usr/local/bin/sudoreplay !log_output
+      Defaults log_servers={{ manager_ip }}:30344
+      Defaults maxseq = 1000
+    path: /etc/sudoers
+
+- name: Set sudosh as the only shell
+  copy:
+    content: /usr/local/bin/sudosh
+    dest: /etc/shells
+
+- name: Change shell to sudosh
+  user:
+    name: root
+    shell: /usr/local/bin/sudosh

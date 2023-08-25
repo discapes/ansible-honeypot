@@ -1,0 +1,24 @@
+- name: Install syslog-ng
+  community.general.pacman:
+    name: syslog-ng
+    state: present
+
+- name: Create /var/log/remote
+  file:
+    path: /var/log/remote
+    state: directory
+
+- name: Configure syslog-ng
+  notify: reload syslog-ng config
+  copy:
+    src: syslog-ng.conf
+    dest: /etc/syslog-ng/syslog-ng.conf
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Ensure syslog-ng is started and enabled
+  service: 
+    name: syslog-ng@default
+    state: started
+    enabled: yes
