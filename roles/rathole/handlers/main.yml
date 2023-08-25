@@ -1,4 +1,6 @@
-- name: reload rathole unit
+- name: reload rathole config
   command: "systemctl restart {{ rathole_type }}@default"
 - name: reload rathole unit
   command: "systemctl daemon-reload"
+- name: reload rathole unit
+  command: "systemctl restart {{ rathole_type }}@default"
